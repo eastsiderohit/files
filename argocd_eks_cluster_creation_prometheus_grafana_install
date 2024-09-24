@@ -1,0 +1,219 @@
+================================================================================================================================
+
+First create AWS ACCESS & SECRET KEY AND DO AWS CONFIGURE ON YOUR LOCAL SYSTEM:-
+
+***REQUIREMENTS:- EKCTL,AWS CLI,KUBECTL,KUBECTX,KUBENS,HELM
+
+================================================================================================================================
+
+For Creating Cluster in Same VPC where we have Our Servers (change region name give two num of private subnet id) 
+ 
+Now paste all the subnets of Our VPC in private subnets :-
+ 
+1. eksctl create cluster --name= qa-stbl \
+                      --region=ap-southeast-1 \
+                       --vpc-private-subnets=subnet-0c1930b3bfbbd8067,subnet-08d4d9c0447209a5f \
+                      --without-nodegroup --version 1.25
+                
+================================================================================================================================
+It allows permission to all iam user and also allow eks to access all aws resources
+                                            
+2. eksctl utils associate-iam-oidc-provider \
+    --region ap-northeast-2 \
+    --cluster prod-future-exchange \
+    --approve 
+
+================================================================================================================================    
+
+CREATE NODE with YML according to your Desired capacity and Size according to Backend Services:-
+
+# vim node.yml 
+
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: qa-stbl
+  region: ap-southeast-1
+managedNodeGroups:
+  - name: qa-stbl-ng
+    instanceType: t3.large
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 2
+    volumeSize: 80
+    privateNetworking: true
+    ssh: # use existing EC2 key
+      publicKeyName:  qa-stbl
+      
+================================================================================================================================      
+
+Then Run this Command:-ap-southeast-2
+      
+eksctl create nodegroup --config-file node.yml 
+ 
+aws eks update-kubeconfig --region ap-southeast-1 --name qa-stbl	
+================================================================================================================================
+
+######### for argocd ############
+
+first install helm repo with below command 
+
+helm repo add argo-cd https://argoproj.github.io/argo-helm
+
+######### then update helm repo ##############
+
+helm repo update
+
+================================================================================================================================
+
+Then install argocd with below command once command will execute it will give another command
+
+helm install argocd argo/argo-cd   --create-namespace   -n argocd
+
+“If you are getting error something like that below: “
+
+Error: INSTALLATION FAILED: Kubernetes cluster unreachable: Get "https://476BF458F2F6BF50E689322934CCBAC7.gr7.eu-central-1.eks.amazonaws.com/version": getting credentials: decoding stdout: no kind "ExecCredential" is registered for version "client.authentication.k8s.io/v1alpha1" in scheme "pkg/runtime/scheme.go:100"
+
+Then you need to update the kubectl, here is command to update the kubectl 
+
+curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.14/2022-05-09/bin/linux/amd64/kubectl 
+chmod +x ./kubectl 
+sudo mv ./kubectl /usr/local/bin 
+
+Then update the aws-iam-authenticator
+
+curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.14/2022-05-09/bin/linux/amd64/aws-iam-authenticator 
+
+chmod +x ./aws-iam-authenticator 
+
+sudo mv aws-iam-authenticator /usr/local/bin
+
+Then update the kubeconfig 
+
+aws eks update-kubeconfig --name argocd-eks --region eu-central-1
+
+Then install helm chart
+
+helm install argocd argo/argo-cd --create-namespace -n argocd 
+
+which will look like this 
+
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+
+then execute this above command it will give you the password and that password will be the argocd UI password and username will be admin
+
+
+once argocd installation get complete you will see a new namespace will be created with name argocd and select that namespace the select argocd server pods click on argocd server pods under containers it will show these ports select server:8080/TCP click on browser provide your username and password 
+
+server: 8080/TCP
+metrics: 8083/TCP
+ 
+================================================================================================================================
+
+Then navigate to terminal and create one directory with any name and move prom.yaml loki.yaml grafana.yaml this files into that directory and change the namespace name and project name and in loki file make sure you only change one namespace name which is on starting of the file and second one namespace name should be loki only 
+
+Then execute command kubectl apply -f prom.yaml similarly execute loki file and grafana file and the navigate to argocd UI 
+
+Then you will see three deployments with name grafana loki prometheus click on sync apps select grafana loki prometheus and it will start syncing
+
+================================================================================================================================
+
+then navigate to lens and click on networks then services then select namespace grafana and you will see your grafana pod click on it then click on forward it will navigate to grafana dashboard 
+
+then click add you first data source, select prometheus, then go back to lens dashboard under network select services select prometheus, then give url http://prometheus-server.prometheus:80 click on save test
+
+then similarly follow the same steps for loki (url: http://loki.loki:3100) 
+
+================================================================================================================================
+To install prometheus and grafana on lens steps are: 
+
+First configure aws cli in your local system and then do aws configure and command to check which user you are using is “aws sts get-caller-identity”
+
+Then install metric server on local system it will automatically install in eks why because you have already configured aws cli and the command is 
+
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+kubectl get deployment metrics-server -n kube-system
+
+And you can also follow this docs
+https://docs.aws.amazon.com/eks/latest/userguide/metrics-server.html
+
+
+
+
+
+
+
+
+
+
+
+
+Then install prometheus and grafana with the helm command 
+
+
+
+
+(1) Grafana Install on EKS
+
+-->>  helm repo add grafana https://grafana.github.io/helm-charts
+
+-->>  helm repo update
+
+-->>  helm install grafana grafana/grafana --namespace grafana --version 6.51.0 --create-namespace \
+  --set persistence.enabled=true \
+  --set persistence.size=20Gi
+
+
+==============================================================================================================================================================================================
+
+(2) Prometheus Install on EKS
+
+-->>  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+-->>  helm repo update
+
+-->>  helm install prometheus prometheus-community/prometheus --namespace prometheus --version 20.1.0 --set alertmanager.enabled=false --create-namespace
+
+Then navigate to lens dashboard in left pane click on config
+Then config Maps
+Then select all namespaces
+Then select aws-auth click on it then click on edit
+Just after maproles like this below, add groups and your IAM user arn and username, save& close 
+mapRoles: |
+   - groups:
+     - system:bootstrappers
+     - system:nodes
+     rolearn: arn:aws:iam::312996103805:role/eksctl-argocd-eks-nodegroup-argocd-NodeInstanceRole-2ECr70iQpfi2
+     username: system:node:{{EC2PrivateDNSName}}
+   - groups:
+     - system:masters
+     userarn: arn:aws:iam::312996103805:user/Antier-devops-rohit-1036-hlf
+     username: Antier-devops-rohit-1036-hlf
+Then get back to aws dashboard click on eks 
+Then click on add-ons
+Then click on get more add-ons
+Then select amazon ebs csi driver 
+Then select IAM role (as of now i have selected Not set which is by default)
+Then click on create 
+
+Then again click on eks 
+Then click on compute
+Then click on your node group (node)
+Then click copy node iam role arn 
+The paste the same role arn on aw iam role
+Then click on permission 
+Then add permission aws ec2 full access 
+
+
+Then execute this below command to install ebs-csi-driver, change your cluster name and execute in local where you have configured aws configure 
+
+eksctl create iamserviceaccount \
+    --name ebs-csi-controller-sa \
+    --namespace kube-system \
+    --cluster prod-coinzone \
+    --role-name AmazonEKS_EBS_CSI_DriverRole \
+    --role-only \
+    --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy \
+    --approve
+

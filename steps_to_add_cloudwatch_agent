@@ -1,0 +1,79 @@
+First make sure to make role with any name as of now i have made with name EC2-Cloudwatch-Metrics
+
+Then attach some required policy 
+Amazoncontainerregistrypolicy
+Cloudwatchagentadminpolicy
+Cloudwatchagentserverpolicy
+Cloudwatchfullaccess
+
+Then attach these roles to instance which ever you want to monitor
+
+sudo wget https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb
+
+sudo dpkg -i -E ./amazon-cloudwatch-agent.deb
+
+sudo nano /opt/aws/amazon-cloudwatch-agent/bin/config.json (put this content below)
+{
+   "agent": {
+       "metrics_collection_interval": 60,
+       "run_as_user": "root"
+   },
+
+   "metrics": {
+       "metrics_collected": {
+
+           "procstat": [
+                {
+                        "pattern": "--execution-endpoint",
+                        "measurement": [
+                                "cpu_usage"
+                        ]
+                },
+                {
+                    "pattern": "--http.corsdomain",
+                    "measurement": [
+                            "cpu_usage"
+                    ]
+            }
+            ],
+           "cpu": {
+               "measurement": [
+                   "cpu_usage_idle",
+                   "cpu_usage_iowait"
+               ],
+               "metrics_collection_interval": 60,
+               "totalcpu": true
+           },
+           "mem": {
+               "measurement": [
+                   "mem_used_percent",
+                   "mem_available_percent",
+                   "mem_total",
+                   "mem_free",
+                   "mem_used"
+               ],
+               "metrics_collection_interval": 60
+           },
+           "disk": {
+               "measurement": [
+                   "used_percent",
+                   "disk_used",
+                   "disk_total",
+                   "disk_free"
+               ],
+               "metrics_collection_interval": 60,
+               "resources": [
+                   "*"
+               ]
+           }
+
+       }
+   }
+}
+Then save the file
+
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json (with this command it will generate soflink)
+
+sudo systemctl restart amazon-cloudwatch-agent
+sudo systemctl status amazon-cloudwatch-agent
+

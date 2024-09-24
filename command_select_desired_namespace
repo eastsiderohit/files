@@ -1,0 +1,3 @@
+kubectl get ns
+kubectl config set-context --current --namespace=testnet-explorer-saitachain
+kubectl config view --minify --output 'jsonpath={..namespace}' (to see which namespace am using)

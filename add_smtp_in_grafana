@@ -1,0 +1,40 @@
+Steps to add smtp in grafana
+
+First create an account on brevo (sendin blue)
+Then click on right side top corner
+Then click on smtp & api
+Then click on generate a new smtp key
+Give your suitable name 
+Then click on create it will generate the code and paste that code somewhere
+Then copy smtp details  
+
+Then open the file sudo nano /etc/grafana/grafana.ini search smtp with command ctrl+w and write smtp then enter 
+Then configure the below changes 
+
+[smtp]
+enabled = true
+host = smtp-relay.brevo.com:587
+user = rohitksharma75@gmail.com
+# If the password contains # or ; you have to wrap it with triple quotes. Ex """#password;"""
+password = xsmtpsib-9ca488421b1d47f9805df94270ca278e717f8ccfed8b358672da2f9deb0466f4-nVB08tIJfYr1EwAx
+;cert_file =
+;key_file =
+;skip_verify = false
+from_address = admin@grafana.localhost
+from_name = Grafana
+
+Then restart the grafana service “sudo systemctl restart grafana-server.service
+
+
+Then navigate to grafana dashboard click on three horizontal lines 	
+Then click on alerting 
+Then click on alert rules 
+Then click on contact points 
+Add contact points 
+Give your name 
+In integration select email
+Then under address give email address which you want to attach for the alerts
+Then click on test     
+ 
+
+

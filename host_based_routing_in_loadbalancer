@@ -1,0 +1,59 @@
+First create target group
+Choose target type instance as of now
+Then give target group name (stage-tap-ball-game-shido) as of now
+Then select protocol HTTP and give port num on which your service is running (as of now my service is running on 3001)
+Then select your vpc
+Then select instance 
+Then click on include pending below
+Then click on create target group
+
+Then create load balancer select application load balancer as of now 
+Then give your load balancer name and select vpc and availability zone
+Select security group or create new one ask developer to give port num and on which port service will run
+Then select listener https 443 port num and select your target group
+Then select certificate 
+Then create 
+
+Then navigate to existing load balancer 
+Then click on listener rules
+Then click on https:443
+Then click on add rule
+Then give name 
+Then click on next
+Then click on conditions
+Then choose condition “host header”
+Then give your domain name as of now i gave stage-tap-ball-game-shidoscan.com
+Then click on confirm
+Then click on next
+Then select forward to target groups select your target group
+Then give priority 1, 2, 3, 4, according to how many target group you have defined
+Then click on next create
+
+
+Bind domain
+
+Then navigate to route53
+Then click on hosted zone
+Then click on create record
+Then give your record name what you gave while creating target group (stage-tap-ball-game-shido)
+Then select CNAME (if you creating sub domain then you have always select CNAME why because you have to route traffic to another domain)
+Then copy load balancer endpoint 
+Navigate to load balancer 
+Click on your load balancer 
+Click on DNS Name
+And again navigate to route53 
+Click on hosted zone 
+Then select your domain
+Then paste there in under value
+Then click on create records 
+Then copy your domain and paste it in browser 
+
+
+How to see if your node is healthy or not?
+
+Click on your load balancer
+Then under listeners & rules 
+Under default action table (click on under forward to target group) 
+You will see your nodes
+
+If it is showing unhealthy then check your security group and and also navigate to cloud via ssh then execute netstat -tulnp command to see whether any service running on your given port or not if not then it will show unhealthy

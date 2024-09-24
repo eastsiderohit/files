@@ -1,0 +1,6 @@
+First generate password from password generator 
+As of now my password is “MhVE7L5UA62HhRp”
+Then execute below command
+echo -n "MhVE7L5UA62HhRp" | base64 (replace your password from here)
+
+It will generate in base 64 encrypted form

@@ -1,0 +1,48 @@
+HOW DNS WORKS?
+
+
+What is DNS?
+
+DNS is a Domain Name Service and it gives a unique name to IP.
+
+DNS Workflow?
+
+💻 ➡️  🛢️ ➡️    💾 ➡️   
+   User                     DNS resolver             DNS/Root server                         
+                   
+        ⬆️         ↙️                                             ↩️  
+                 
+                               ⬆️
+ 🛢️         🪗         
+  Authoritative Server                  TLD                                                                                                                 
+
+
+User                           : It can be anyone either me and you
+
+DNS resolver            : It sits between user and dns server, and it works as an intermediary and        it resolves domain name into ip address which is binded with domain.
+
+DNS/Root server      : It route request to top level domain (TLD) 
+
+TLD                            : Top level domain for e.g., .org, .net, .com, .gov, .edu
+
+Authoritative server : It stores ip and domain both 
+
+
+
+
+
+
+Types of record:
+
+A                 : It maps domain name to ip address (for e.g., example.com -> 192.0.2.1)
+
+AAAA         : It maps domain name to ipv6 address (for e.g., example.com -> 2001:0db8:85a3:0000:0000:8a2e:0370:7334)
+
+CNAME      : It maps subdomain to root domain (for e.g., www.example.com -> example.com)
+
+MX Record : It attach with mail servers responsible for receiving email on behalf of a domain (for e.g., example.com -> mail.example.com (priority 10))
+
+TXT Record : Stores text information related to domain (for e.g., example.com -> "v=spf1 include:_spf.example.com ~all")
+
+
+

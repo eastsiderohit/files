@@ -1,0 +1,79 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_ACCOUNT_ID = "654654239642"
+        AWS_DEFAULT_REGION = "ap-southeast-1"
+        IMAGE_REPO_NAME = "stage-zetacast-arbitration-frontend"
+        DATE_TIME_TAG = sh(script: 'date "+%Y-%m-%d-%H-%M"', returnStdout: true).trim()
+        REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
+        DEPLOYMENT_NAME = "stage-zetacast-arbitration-frontend"
+        CONTAINER_NAME = "stage-zetacast-arbitration-frontend"
+        NAMESPACE = "stage-zeta-cast"
+    }
+
+    stages {
+        stage('Logging into AWS ECR') {
+            steps {
+                script {
+                    sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+                }
+            }
+        }
+
+        stage('git clone') {
+            steps {
+                script {
+                    git credentialsId: 'zetacast', url: 'http://repo.antiersolutions.com/zeta-cast/arbitration.git', branch: 'stage'
+                }
+            }
+        }
+        
+        stage('Copy .env file') {
+            steps {
+                script {
+                    // Copy the .env file to the required location
+                    sh "cp /var/config/stage-arbitration-frontend.env .env"
+                    sh "cat .env"
+                }
+            }
+        }
+        
+        stage('Building image') {
+            steps {
+                script {
+                    dockerImage = docker.build("${IMAGE_REPO_NAME}:${DATE_TIME_TAG}", "--no-cache .")
+                }
+            }
+        }
+        
+        stage('Remove .env file') {
+            steps {
+                script {
+                    // Remove the .env file after building
+                    sh "rm .env"
+                }
+            }
+        }
+        
+        stage('Pushing to ECR') {
+            steps {
+                script {
+                    sh "docker tag ${IMAGE_REPO_NAME}:${DATE_TIME_TAG} ${REPOSITORY_URI}:${DATE_TIME_TAG}"
+                    sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${DATE_TIME_TAG}"
+                }
+            }
+        }
+        
+        
+        stage('Update Deployment') {
+            steps {
+                script {
+                    // Use kubectl set image command to update the image
+                    sh "kubectl set image deployment/${DEPLOYMENT_NAME} ${CONTAINER_NAME}=${REPOSITORY_URI}:${DATE_TIME_TAG} --namespace=${NAMESPACE}"
+                }
+            }
+        }
+
+    }
+}
