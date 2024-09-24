@@ -1,0 +1,50 @@
+First ask dev to share env’s which will look like this below (as of now i have saitachain env’s testnet)
+
+SOCKET SERVICE
+
+
+PORT=7600
+NODE_ENV=local
+REDIS_HOST=localhost
+REDIS_PORT=6379
+PROJECT_NAME=Saitachain
+COPYRIGHT_YEAR=2004
+SOCKET_HOST=wss://wss-stage-nodes.saitascan.io
+SOCKET_HOST2=wss://wss-stage-nodes.saitascan.io
+SOCKET_HOST3=wss://wss-stage-nodes.saitascan.io
+RabbitMqURL=amqp://admin:lwAqCIdLHCNY486CpOPc@10.1.153.159
+BACKEND_API_HOST=http://localhost:7800/api/saita/explorer
+
+Then give the name according to service (as of now my service name is explorer-native-ws)
+Then make sure you have configured aws 
+Then create file in your local system with .yaml extension
+Then execute the file with command below 
+Kubectl create configmap explorer-native-ws –from-env-file=explorer-native-ws.yaml (it will create configmap)
+Then navigate to lens dashboard
+Then click on configmap 
+Then select your configmap and click on edit you will see your env’s 
+Then run your deployment file service file and hpa.yaml file
+Then ask dev to share the latest env and navigate again to configmap and update the latest env 
+Then ask dev the repo name 
+Then see which access do you have (maintainer access needed)
+Then clone the repo in your local system or in your ec2 instance (use your gitlab token)
+Then switch the branch where you have the code 
+Then navigate to ecr 
+Then click on ecr repo
+Then click on view push command 
+Execute all the docker commands
+Then navigate to lens dashboard
+Then click on deployments 
+Restart your deployment according to your service 
+Once it comes in running state 
+Then on the lens dashboard left pane
+Click on network
+Then click on services 
+Then click on your desired services 
+Then click on ports forward port 
+Then check your deployment file if it is like this below example 
+httpGet:
+             path: /saita/status
+             port: 7900
+
+Then copy /saita/status and paste it 

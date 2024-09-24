@@ -1,0 +1,33 @@
+First collect all the files ipfs.zip, redis.zip, values.zip, helms.zip
+First unzip the ipfs.zip file (open the lens and select your eks cluster and click on terminal)
+Then execute command (kubectl config current-context) this contains information about the cluster
+kubectl config get-contexts (to see available context)
+kubectl config use-context <context-name> (to use desired context)
+Then create a directory with your project name 
+Then move the ipfs.zip into that directory and unzip the file 
+Then make sure you have installed helm in your local machine
+In ipfs.zip once you unzip the file ipfs.zip, it will create a directory with the name ipfs and all the files will be inside the ipfs directory 
+Then navigate to the template directory
+Then execute code . it will open in visual studio code
+Then you need to make changes in some file 
+Open ipfs_pv.yaml file line num 19 or host_path example below
+hostPath:
+   path: "/mnt/data/cluster-ipfs-{{ $i }}-prod"
+
+Just add -prod after curly braces why because it will give already persistent volume exist error 
+Also in line 34
+hostPath:
+   path: "/mnt/data/ipfs-{{ $i }}-prod"
+
+Do the same
+
+Then move the values.zip file on the same directory and unzip it will create directory with the name values all the files will be under the values directory 
+Then move value.yaml file inside the ipfs directory 
+And then execute this command 
+helm install ipfs-cluster-new . -n prod-zeta-cast -f ipfs.yaml (it will create 2 ipfs cluster) 
+
+
+
+ 
+
+

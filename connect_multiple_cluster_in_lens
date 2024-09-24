@@ -1,0 +1,11 @@
+First create secret key and access key in your user 
+
+Then do aws configure and the command is “aws configure --profile <give your eks cluster name> as of now my command is aws configure --profile prod-game-shido
+
+Then give access_key, secret_access_key region, region_name, output_name json 
+
+Then execute lens command as shown below
+
+“aws eks update-kubeconfig --name prod-game-shido --region eu-central-1 --profile prod-game-shido”
+
+Then navigate to lens and click on your cluster, if you are not able to connect then you have to add user arn

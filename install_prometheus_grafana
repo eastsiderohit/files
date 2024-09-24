@@ -1,0 +1,90 @@
+Steps to install Prometheus & Grafana on ubuntu 20.04  machine
+
+Will give a brief note of what is Prometheus, Grafana & Node Exporter 
+
+Prometheus: It is an open source monitoring tool, it can collect and store metrics as time series data recording information with timestamp.
+
+Grafana: It is an open source analytics and interactive visualisation web application  
+
+Node Exporter: It is nothing but its a plug in that gathers system metrics and expose them in a format which can be ingested by prometheus
+
+Now lets move to the installation part 
+
+As of now am having 3 nos. of server, among 3 am making 1 as a master server and another 2 as client
+In master server i will install Prometheus & Grafana
+In remaining 2 server i will install Node Exporter which will work as a client
+
+So, now let’s start with the first step which is our master server where we need to install Prometheus & Grafana.
+
+You can follow these below given url to install prometheus on ubuntu:
+
+https://www.cherryservers.com/blog/install-prometheus-ubuntu
+
+You can follow these below url to install grafana:
+https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-grafana-on-ubuntu-20-04
+
+
+ Steps to install node exporter which will work as a client 
+
+And the next step is to install the Node Exporter in the remaining 2 servers.
+
+You can take a reference to install the Node Exporter which will works as client as mentioned below:
+
+https://rm-rf.medium.com/install-node-exporter-for-prometheus-grafana-d0ec29b8a2b6
+
+Now we are done with the installation part on all the server, now we need to do some small changes in master server where you have installed Prometheus and Grafana
+
+So let’s move to master server and open the prometheus.yml file as shown below
+
+(sudo nano /etc/prometheus/prometheus.yml)
+
+In these prometheus.yml files you have to define the job_name, that means you have to provide the client server private ip with port no. 9100 and host server name as shown below:
+
+- job_name: "stage-substrate-node2-saitachain"
+    static_configs:
+      - targets: ["10.0.13.185:9100"]
+
+  - job_name: "stage-substrate-node3-saitachain"
+    static_configs:
+      - targets: ["10.0.0.47:9100"]
+
+As of now i have added 2nos. of server, similarly you can add more if you have more nos. of server.
+
+
+Then restart the prometheus with command (sudo systemctl restart prometheus.service)
+
+
+Then make sure to open all the port number 9090 for prometheus, 9100 for node exporter, 3000 for grafana and the VPC CIDR, so that your server will communicate with each other on the same network 
+
+Then you can access the prometheus dashboard with the help of master server public ip with port 9090. (For eg., 0.0.0.0:9090)
+
+Once you have accessed your dashboard click on status, then click on targets, you will see all your client server (i.e., Node Exporter)
+
+Now let's proceed to access Grafana Dashboard
+ 
+Copy your master server public ip and paste in the browser with port number 3000 you will see your grafana dashboard. (For eg., 0.0.0.0:3000)
+
+Once you successfully accessed grafana dashboard click on left side home button
+Then click on connections
+The you will see a search bar then search prometheus
+Then click on left side “Add new data”
+Give your suitable understanding name….
+Then provide your Prometheus server url “http://localhost:9090” the reason behind providing localhost is, your prometheus and grafana are running on the same server.
+Then scroll down and click on “save & test”
+
+Now will see how garfana will fetch data from Node Exporter
+
+So now we are in last step go to browser and search “node exporter dashboard grafana” or you can take this below link as a reference it will give you a dashboard template id
+ 
+https://grafana.com/grafana/dashboards/1860-node-exporter-full/
+
+Click on the dashboard id copy it will get copy
+Then go back to grafana dashboard 
+Then click on left side home button
+Then click on dashboard 
+Then click on right side new 
+Then click on import 
+Then paste your code which you have copied from the above mentioned url the code will be (1860)
+Then paste there then click on load
+Then select prometheus data source in the last column
+Then click on import it will show your all the data running on ec2 like RAM, CPU, Network traffic, Disk space 

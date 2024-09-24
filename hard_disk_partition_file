@@ -1,0 +1,62 @@
+Make a file with name mount.sh and paste the entire file 
+Execute command 
+sudo mkfs -t ext4 /dev/xvdf	
+lsblk
+df -Th
+lsblk 
+sudo mount -a and for unmount “sudo umount /dev/xvdf <your directory xyz>”
+sudo xfs_growfs /dev/xvdf
+
+
+#!/bin/bash
+sudo mkdir /data #create directory
+disk2=$(lsblk -nx size -o kname|tail  -1 |awk {'printf "/dev/"$1'}) # To find unmount partition
+sudo mkfs -t xfs $disk2 # To make a filesystem on partition 
+sleep 30
+sudo cp /etc/fstab /etc/fstab-old # To backup file /etc/fstab-old
+VUUID=$(sudo blkid -o value -s UUID $disk2)
+sleep 30
+sudo su -c "echo 'UUID=$VUUID  /data   xfs   defaults        0       0' >> /etc/fstab" # To entry permanent mount
+
+sudo mount -a
+sudo chown -R ubuntu:ubuntu /data # change the ownership /data dir.
+
+
+
+Another way of data partition:
+ 
+Manually attach  desired storage volumes to ec2 instance 
+Then navigate to cloud 
+Execute command lsblk it will show your attached volume like this xvdf   2 G  disk
+Then make one directory with name /data
+Then execute command sudo mkfs -t ext4 /dev/xvdf it will generate UUID=
+Copy that UUID number 
+Open file sudo nano /etc/fstab
+Paste there UUID=45bcf375-a40f-481b-9e0e-525d2e92f87e  /data   ext4   defaults        0
+Then exit from the file 
+Execute command sudo mount -a it will mount your additional volume in /data
+Then again execute lsblk and df -Th you will see your volume mounted on /data and total avail size 
+
+
+
+
+
+
+
+Similarly if you want to unmount and attach to other directory or want to increase you can do these following steps:
+
+First manually increase the volume 
+
+Come back to terminal
+Then execute command lsblk it will show how much you have increased as of now am having 2gb and am increasing it to 3gb 
+Execute command lsblk
+Then make one directory where you want to mount as of now am making /data2
+Then open /etc/fstab file just replace the directory with the name which you have created as of now i have created /data2
+Then execute command sudo umount /dev/xvdf /data to unmount from /data directory
+Then execute command sudo mount -a it will get mount to the new directory /data2
+
+screen -S <name> ----------> create screen command as of now my screen name is download 
+screen -r download 
+ screen -ls (to see whether my screen is created or not)
+ ctrl+a+d to come out from screen detached mode 
+

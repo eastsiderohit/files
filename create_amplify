@@ -1,0 +1,214 @@
+Amplify we are using for frontend deployment
+
+First we need to create iam user to whom you want to give access
+
+Navigate to iam user create user with proper naming convention
+Then desired permission (as of now i gave awscodecommitfullaccess)
+Then create
+Then get back into the user and click on security credential scroll down
+Then click on HTTPS Git credentials for AWS CodeCommit 
+Then create user and password and save it
+Then navigate to aws codecommit to create repo in CodeCommit just give repo name followed by standard naming convention (as of now my repo name is stage-metamask-app-ball-tap-game-shido)
+Then click on create
+Once repository is created then click on that repo 
+Then click on clone url
+Then click on clone https
+First you need to manually deploy file from aws dashboard 
+Create any xyz file and push to ecr repo 
+Then clone your repo in your local system 
+And use the creds which you have created for cloning repo 
+Then create a branch and push it into the repo
+Then share the https url to developer
+
+
+Then create amplify
+
+Navigate to aws amplify 
+Click on create new app
+As of now my code is in codecommit so am selecting codecommit
+Select your repository and branch 
+Click on next 
+Then click on save and deploy (if you get any error like error 108 can't clone it is due to insufficient permission, in that case create one role and attach these, custom policy 
+give name xyz and paste this 
+
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "PushLogs",
+			"Effect": "Allow",
+			"Action": [
+				"logs:CreateLogStream",
+				"logs:PutLogEvents"
+			],
+			"Resource": "arn:aws:logs:ap-southeast-1:096085577054:log-group:/aws/amplify/*:log-stream:*"
+		},
+		{
+			"Sid": "CreateLogGroup",
+			"Effect": "Allow",
+			"Action": "logs:CreateLogGroup",
+			"Resource": "arn:aws:logs:ap-southeast-1:096085577054:log-group:/aws/amplify/*"
+		},
+		{
+			"Sid": "DescribeLogGroups",
+			"Effect": "Allow",
+			"Action": "logs:DescribeLogGroups",
+			"Resource": "arn:aws:logs:ap-southeast-1:096085577054:log-group:*"
+		},
+		{
+			"Effect": "Allow",
+			"Resource": [
+				"arn:aws:codecommit:ap-southeast-1:096085577054:qa-exchange-shido"
+			],
+			"Action": [
+				"codecommit:GitPull"
+			]
+		}
+	]
+}
+
+And add another policy that is aws managed policy (awscodecommitfullaccess)
+ 
+
+Then attach this role to your aws amplify
+Click on your aws amplify 
+Then click on left side app settings
+Then click on general settings
+Then click on edit
+Then click on service role and attach and save
+Then click on redeploy this version
+
+To troubleshoot the amplify while deploying code is:
+First check build amplify.yaml file (steps)
+Click on your application
+Then click on left pane hosting
+Under hosting build settings there will be a amplify.yaml file update the amplify file
+
+
+
+
+            version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm install -f
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: build
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+
+In roles you need to attach these policies 
+AWSAmplifyCodeCommitExecutionPolicy-d1lexe91lrbl4c
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "PushLogs",
+			"Effect": "Allow",
+			"Action": [
+				"logs:CreateLogStream",
+				"logs:PutLogEvents"
+			],
+			"Resource": "arn:aws:logs:ap-southeast-2:096085577054:log-group:/aws/amplify/*:log-stream:*"
+		},
+		{
+			"Sid": "CreateLogGroup",
+			"Effect": "Allow",
+			"Action": "logs:CreateLogGroup",
+			"Resource": "arn:aws:logs:ap-southeast-2:096085577054:log-group:/aws/amplify/*"
+		},
+		{
+			"Sid": "DescribeLogGroups",
+			"Effect": "Allow",
+			"Action": "logs:DescribeLogGroups",
+			"Resource": "arn:aws:logs:ap-southeast-2:096085577054:log-group:*"
+		},
+		{
+			"Effect": "Allow",
+			"Resource": [
+				"arn:aws:codecommit:ap-southeast-2:096085577054:prod-exchange-shido"
+			],
+			"Action": [
+				"codecommit:GitPull"
+			]
+		}
+	]
+}
+
+If you can't find the policy with that name then you can create a permission with these file
+Then also you have to attach these policy 
+
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "PushLogs",
+			"Effect": "Allow",
+			"Action": [
+				"logs:CreateLogStream",
+				"logs:PutLogEvents"
+			],
+			"Resource": "arn:aws:logs:eu-west-1:096085577054:log-group:/aws/amplify/*:log-stream/*"
+		},
+		{
+			"Sid": "CreateLogGroup",
+			"Effect": "Allow",
+			"Action": "logs:CreateLogGroup",
+			"Resource": "arn:aws:logs:eu-west-1:096085577054:log-group:/aws/amplify/*"
+		},
+		{
+			"Sid": "DescribeLogGroups",
+			"Effect": "Allow",
+			"Action": "logs:DescribeLogGroups",
+			"Resource": "arn:aws:logs:eu-west-1:096085577054:log-group:*"
+		},
+		{
+			"Effect": "Allow",
+			"Resource": [
+				"arn:aws:codecommit:eu-west-1:096085577054:stage-tap-ball-game-admin"
+			],
+			"Action": [
+				"codecommit:GitPull"
+			]
+		}
+	]
+}
+
+And atlast you need to make changes in trust relationships file, click on your roles then just beside the permission there is column name trust relationships modify the file according to below file 
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": [
+                    "amplify.amazonaws.com",
+                    "amplify.eu-west-1.amazonaws.com"
+                ]
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+
+Then under hosting rewrites and redirects 
+Click on manage redirects and add this below query
+
+Source address
+</^[^.]+$|\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|ttf|map|json)$)([^.]+$)/>
+
+Target address
+/index.html
+
+Type
+200 (Rewrite)
+
+Then save the file and redeploy the version

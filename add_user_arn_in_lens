@@ -1,0 +1,37 @@
+First create user in aws iam
+Then create inline policy with permission list cluster and describe cluster access as shown below 
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "eks:DescribeCluster",
+                "eks:ListClusters"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+Then save it 
+Then ask the person who has created eks cluster on aws, to add user in aws auth in lens 
+Then navigate to lens dashboard
+Then click on configmap
+Then click on namespace, select your kube-system namespace 
+Then click on pencil mark (edit)
+Then copy the user arn and name 
+Then paste exactly below 
+
+- groups:     
+     - system:masters
+     userarn: arn:aws:iam::096085577054:user/devops-rohit-1036-shido
+     username: devops-rohit-1036-shido
+   - groups: 
+     - system:masters
+     userarn: arn:aws:iam::096085577054:user/dev-karanmehta-atr692-tap-game-shido
+     username: dev-karanmehta-atr692-tap-game-shido
+
+Then save and close 
+Then quit the lens dashboard and reopen again

@@ -1,0 +1,6 @@
+Manually increase the volume by stopping the instance and click on instance and go to volumes and click on your additional volume
+Then open your vol click on your vol and click on action and manually increase to your desired size
+Then navigate to instance copy ssh and get in your server 
+Execute lsblk and df-Th
+Then execute this below command
+sudo xfs_growfs -d /dev/nvme1n1

@@ -1,0 +1,10 @@
+version: "2.0"
+services:
+  phpmyadmin:
+    container_name: phpmyadmin_container
+    image: phpmyadmin/phpmyadmin:5.0.1
+    restart: on-failure
+    environment:
+      PMA_HOST: prod-fan-verse-wallet.cqccvkgjxtur.ap-southeast-1.rds.amazonaws.com
+    ports:
+      - '0.0.0.0:81:80'

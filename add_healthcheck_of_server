@@ -1,0 +1,11 @@
+Click on your load balancer
+Under listener & rules, default action 
+Click on your forward to target group 
+Then click on health checks
+Then click on edit 
+Then click on advanced health check settings
+Then select override 
+And give port num (you can take reference of existing server)
+Click on save changes
+It will take 5 - 10 min to reflect changes
+
