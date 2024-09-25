@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=my_root_password
+      - MYSQL_DATABASE=my_database
+      - MYSQL_USER=my_user
+      - MYSQL_PASSWORD=my_password
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    ports:
+      - 0.0.0.0:82:80
+    environment:
+      - PMA_HOST=stage-mysqlrds-eterna.c5kmdjifart8.us-west-2.rds.amazonaws.com
+      - MYSQL_ROOT_PASSWORD=mysql_root_password
+
+  rabbitmq:
+    image: rabbitmq:latest
+    ports:
+      - 5672:5672
+      - 15672:15672 # Expose RabbitMQ management plugin port
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq # Persist data for RabbitMQ
+    command: rabbitmq-server # Start RabbitMQ server
+    networks:
+      - default
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+
+volumes:
+  db_data:
+  rabbitmq_data:
+  redis_data:
+
+networks:
+  default:
+
+

@@ -1,0 +1,21 @@
+First open ubuntu-opnvpn.sh file which you have in your downloads folder or recent
+Then mv ubuntu-opnvpn.sh file into your ec2 server by command
+Scp -i “<your-pem-file>” /your/file/directory/where/you/have/file/in/local/ ubuntu@xyz.com:/home/ubuntu
+Then run ubuntu-ovpn.sh file with command sudo bash ubuntu-ovpn.sh
+Then it will ask some questions like name(while giving name don't use .ovpn extension it will automatic give the extension), port number, protocol give all the necessary information
+Then it will create .ovpn file 
+Then open that file with cat command
+Copy the content and paste in text editor and save the file with convention env-name-projectname.ovpn
+Then in your screen right side up corner 
+Click on down arrow
+Click on vpn
+Then vpn setting
+Click on + icon of vpn
+Then click on import file 
+Import your file, where you have saved 
+Then switch on the vpn 
+And now you can able to access your redis, pgadmin, rabbitmq server all in one server and it is getting access through private ip
+
+
+The reason behind creating ovpn is to access redis, rabbitmq, pgadmin server and it is getting access through private ip
+

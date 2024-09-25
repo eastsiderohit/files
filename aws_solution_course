@@ -1,0 +1,68 @@
+placement group 
+ec2 hibernate 
+ebs vol / snapshot / encryption
+ami
+load balancer / nlb / alb
+
+Cross zone load balancing: It means load distributes evenly / equally to all the nodes in each availability zone
+
+Without cross zone load balancing: It means load distributed unevenly on each availability zone 	
+
+WebSocket: It means it wil, continue fetch data with requesting for example: block number
+ 
+api: application interface it means communication between 2 application 
+
+Network load balancer: It support protocol like
+
+ TCP (Transmission control protocol) : reliable, connection oriented
+
+ TLS (Transport layer security) : secures TCP traffic by encrypting data
+
+ UDP (User datagram protocol) : Connectionless, lightweight protocol for low-latency    transmission
+
+Application load balancer: It support protocol like
+
+ HTTP (Hypertext Transfer Protocol): data communication for the web, enabling browsing and other HTTP-based interactions
+
+ HTTPS (HTTP Secure): providing encrypted communication and secure identification of a network web server
+
+ gRPC (gRPC Remote Procedure Call): A high-performance, open-source universal RPC framework that can use HTTP/2 for transport
+
+ WebSocket: A protocol providing full-duplex communication channels over a single TCP connection, commonly used for real-time applications
+ 
+ Placement group: Types
+
+Partition placement group 
+Spread placement group
+Cluster placement group
+
+Partition placement group: In single availability zone for example us-east-1a you are creating any num of partition like 2 or 3 and you are deploying server in it (instances does not share the same hardware and in diff partition) 
+
+Spread placement group: In each availability zone you are creating server like us-east-1 us-east-1b us-east-1c (
+
+Cluster placement group: Share all (low latency, high network throughput)
+
+
+SSL/TLS: TLS is a upgrade version of ssl and ssl you can buy from godaddy, letsencrypt etc…and ssl use to encrypt communication between client and load balancer, with AWS ACM service you can buy the certificate
+
+If you want to implement ssl on load balancer then 
+click on load balancer 
+Then clik on add listener
+Then clck on protocol select https and port 443
+In certificate section you can select IAM, ACM, or import
+
+
+ASG (AutoScaling Group) template:
+
+AMI, Instance type, EBS Volume, Security groups, ssh keypair, IAM Roles, Network & Subnet information
+
+ELB (elastic load balancer) provide static dns name 
+
+NLB (network load balancer) provide both static ip and dns name 
+
+Scaling an EC2 instance from r4.large to r4.4xlarge is called Vertical scalability
+
+Running an application on an Auto Scaling Group that scales the number of EC2 instances in and out is called Horizontal Scalability
+
+
+

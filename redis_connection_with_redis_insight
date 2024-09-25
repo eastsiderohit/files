@@ -1,0 +1,12 @@
+First install redis insight with the help of cli
+
+sudo apt update
+sudo apt install snapd
+sudo snap install redisinsight
+
+It will take 3-4 min to install 
+Then search redis insight
+Then click on it 
+Then provide your server private ip where you redis is running (as of now my server is running on private ip with port 6379)
+Then click on connect
+

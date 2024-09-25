@@ -1,0 +1,27 @@
+First create parameter group with desired version as of now am using postgres14
+Give your group name as of now am giving prod-pg14-shidochain
+
+Then create subnet group as of now my subnet group name is prod-private-subnetgroup-shidochain and am working on project shidochain
+Env prod
+
+Then finally create a rds:
+Choose standard create
+Select your engine i.e., database as of now am using postgres db
+Select engine version i.e., database version 
+Choose templates: production
+Availability and durability select 2nd one  multi a-z db cluster
+Db cluster identifier give your name as of now am giving prod-pgrds-shidochain
+Credential management choose self-managed 
+Then open password generator create password without special character 
+Then choose 	Instance configuration according to your requirement 
+Then select storage, storage type gp3 allocated storage 100gb 
+Then select connectivity, select dont connect to an ec2 compute resource 
+Then select network type ipv4 
+Then select vpc, customised one
+Public access no 
+Then create a security group
+Then select certificate authority default one 
+Then give tags 
+Then select database authentication, password authentication 
+Then configure additional configuration 
+Give your database optionn

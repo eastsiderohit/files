@@ -1,0 +1,4 @@
+
+For example:
+
+scp -i "stage-shido-jenkins.pem" /home/user/Downloads/kubernetes-1.28.6.zip ubuntu@ec2-52-49-77-238.eu-west-1.compute.amazonaws.com:/home/ubuntu/

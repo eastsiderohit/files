@@ -1,0 +1,8 @@
+First ask developer localsystem public key
+(navigate to .ssh/ and do cat id_rsa.pub it will show the public key of developer system)
+Then send via gchat or any sharing device
+Then in your system navigate to .ssh directory 
+Then open the file sudo nano authorized_keys and paste developer public key and save the file 
+Then change the permission execute two command (chmod 700 ~/.ssh, chmod 600 ~/.ssh/authorized_keys)
+Then go back to developer system execute command (ssh ubuntu@<your_server_public_ip>) 
+

@@ -1,0 +1,9 @@
+interactive_timeout		  			       60
+wait_timeout		          	           60
+log_output		      		               FILE
+slow_query_log	 	     			       1
+general_log		                           1
+log_bin_trust_function_creators            1
+read_only                		           0
+long_query_time                            5
+

@@ -1,0 +1,22 @@
+***************** Node queries for grafana *********************
+
+
+((node_memory_MemTotal_bytes{} - node_memory_MemAvailable_bytes{}) / (node_memory_MemTotal_bytes{} )) * 100                                       (node memory utilisation)
+
+100 - (node_filesystem_free_bytes{instance=~".*", mountpoint="/"} / node_filesystem_size_bytes{instance=~".*", mountpoint="/"} * 100)             (node disk utilisation)
+
+100 - (avg by (node) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)                                                                       (node cpu utilisation)
+
+count(kube_node_info)                                                                                                                             (node count)
+
+count(kube_node_info) - count(kube_node_status_condition{condition="Ready", status="true"})                                                       (node state) 
+
+
+*********************************************************************************************************************************************************************************
+
+Pod queries for grafana
+
+sum(rate(container_cpu_usage_seconds_total{namespace="exchange-auth", pod=~".*"}[5m])) by (pod)                                                  (pod cpu utilisation)
+
+sum(container_memory_usage_bytes{namespace="your-namespace", pod=~".*"}) by (pod)                                                                (pod memory utilisation)
+

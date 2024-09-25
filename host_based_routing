@@ -1,0 +1,31 @@
+First install nginx
+Then ask dev the services name and on which ip address it is running and port num 
+Then navigate to route53 
+Then create one subdomain of your root domain (as of now my root domain is shidoscan.com)
+Then as of now i gave in under record name “game”
+Then select A type why because you want to route traffic on an ipv4 address
+Then under value give the ip on which your service is running 
+Then select simple routing 
+Then select create records
+Once record is created navigare to ec2 server via ssh 
+Then navigate to directory /etc/nginx/conf.d
+Then create a file with name “host_based_routing.conf”
+Then paste this below content on that file 
+# Server block for game.shidoscan.com
+server {
+    listen 80;
+    server_name game.shidoscan.com;
+
+    location / {
+        proxy_pass http://54.216.151.111:3001;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+Then save the file 
+Then execute command sudo nginx -t
+Then execute command sudo systemctl reload nginx
+Then try with the subdomain to access this “game.shidoscan.com”
+

@@ -1,0 +1,57 @@
+# Installing Jenkins
+#!/bin/bash
+
+
+sudo apt install openjdk-17-jre-headless -y
+sleep 3
+sudo apt install openjdk-17-jdk-headless -y
+sleep 3
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee   /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]   https://pkg.jenkins.io/debian-stable binary/ | sudo tee   /etc/apt/sources.list.d/jenkins.list > /dev/null
+apt update -y
+sleep 3
+apt install jenkins -y
+sleep 3
+systemctl start jenkins
+systemctl enable jenkins
+echo "Jenkins initial admin password:"
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword >> jenkins_password.txt
+
+
+# Node Exporter Installation
+
+
+curl -LO https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz
+sleep 5
+sha256sum node_exporter-1.6.1.linux-amd64.tar.gz
+tar xvf node_exporter-1.6.1.linux-amd64.tar.gz
+sleep 3
+sudo cp node_exporter-1.6.1.linux-amd64/node_exporter  /usr/local/bin
+sudo useradd --no-create-home --shell /bin/false node_exporter
+sudo chown node_exporter:node_exporter /usr/local/bin/node_exporter
+rm -rf node_exporter-1.6.1.linux-amd64 node_exporter-1.6.1.linux-amd64.tar.gz
+cat > /etc/systemd/system/node_exporter.service <<EOF
+[Unit]
+Description=Node Exporter
+Wants=network-online.target
+After=network-online.target
+
+
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+ExecStart=/usr/local/bin/node_exporter
+
+
+[Install]
+WantedBy=multi-user.target
+EOF
+sudo systemctl daemon-reload
+sleep 2
+sudo systemctl start node_exporter
+sleep 2
+sudo systemctl enable node_exporter
+
+
+

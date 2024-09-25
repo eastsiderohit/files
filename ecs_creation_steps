@@ -1,0 +1,30 @@
+First need to set up ecr repo 
+Then configure aws iam in your server or local system and make sure you have ecs full access and ecr full access
+Then need to set up task definition
+Give your task definition name 
+Then select launch type as of now my launch type is aws fargate 
+Give the desired size 
+Then select task role (in-built ecsTaskExecutionRole)
+Then inplace of container-1 
+Give your ecr repo name by which name you have created
+Then give image url
+Then port num it will select automatically 
+Then give your port num name
+Then create 
+Then ask dev for the environment variable and set env variable
+
+
+
+Ecs cluster creation
+
+Click on create cluster
+Give your desired name 
+Click on create (once it is created get into the cluster and click on services)
+Click on create
+Select compute options then select launch type the select launch type fargate 
+Then select application type “service”
+Then select family 
+Then give service name
+Then come to networking choose vpc and create separate security group
+Then click on create 
+  

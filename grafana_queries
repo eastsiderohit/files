@@ -1,0 +1,14 @@
+First create a dashboard then add panel and run this above query
+
+Node count queries
+count(kube_node_info)
+
+Disk utilisation 
+100 - (node_filesystem_free_bytes{instance="10.0.9.141:9100"} / node_filesystem_size_bytes{instance="10.0.9.141:9100"} * 100)
+
+Memory utilisation
+(node_memory_MemTotal_bytes{instance="10.0.9.141:9100"} - node_memory_MemAvailable_bytes{instance="10.0.9.141:9100"}) / node_memory_MemTotal_bytes{instance="10.0.9.141:9100"} * 100
+
+Cpu utilisation
+100 - (node_filesystem_free_bytes{instance="10.0.9.141:9100"} / node_filesystem_size_bytes{instance="10.0.9.141:9100"} * 100)
+

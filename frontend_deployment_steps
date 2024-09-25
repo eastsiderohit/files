@@ -1,0 +1,25 @@
+Steps for frontend deployment
+
+First ask developer the repo name (as of now the code is in gitlab and it can be store anywhere gitlab, github etc)
+
+Then clone repo in your local system  (make one directory similar to your repo name as of now my repo name is explorer-native-frontend)
+
+Then ask env’s from developer, once you get the env 
+
+Then make one directory with name .env where you have clone the repo (sudo nano .env .production and paste your env’s there)
+
+Then navigate to aws dashboard
+
+Then navigate to ecr repo
+
+Then click on you repo 
+
+Then click on view docker command 
+
+Then execute all the docker command where you have cloned the repo 
+
+Once image is pushed in your ecr repo 
+
+Then modify your deployment and service file copy your ecr repo url and paste in the place of image
+
+Similarly modify your service file (change port num, namespace) and execute the file

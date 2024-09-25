@@ -1,0 +1,41 @@
+First install nginx with command 
+apt-get update 
+apt-get install nginx -y 
+
+First create a file with .conf extension in the mentioned path as of now i have made mywebsite.conf
+
+/etc/nginx/sites-enabled/mywebsite.conf
+server {
+    listen 80;
+    server_name metaverse.ejadtech.sa;
+
+    root /var/www/html; # Specify the root directory where your HTML files reside
+
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+
+
+Then create a file with name index.html in path /var/www/html with name index.html 
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello, World!</title>
+</head>
+<body>
+    <h1>Hello, World!</h1>
+    <p>This is a simple "Hello, World!" example hosted with Nginx.</p>
+</body>
+</html>
+
+And then create a soft link with this command
+ 
+sudo ln -s /etc/nginx/sites-available/mywebsite.conf /etc/nginx/sites-enabled/
+sudo nginx -t
+And then reload nginx with command 
+
+sudo systemctl restart/reload nginx 

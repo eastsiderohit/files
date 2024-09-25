@@ -1,0 +1,44 @@
+This the url for installing pgadmin
+
+https://www.pgadmin.org/download/pgadmin-4-apt/
+
+And steps to download 
+
+# Install the public key for the repository (if not done previously):
+
+curl -fsS https://www.pgadmin.org/static/packages_pgadmin_org.pub | sudo gpg --dearmor -o /usr/share/keyrings/packages-pgadmin-org.gpg
+
+
+# Create the repository configuration file:
+
+sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/$(lsb_release -cs) pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list && apt update'
+
+
+# Install for both desktop and web modes:
+sudo apt install pgadmin4
+
+# Install for desktop mode only:
+sudo apt install pgadmin4-desktop
+
+# Install for web mode only: 
+sudo apt install pgadmin4-web 
+
+# Configure the webserver, if you installed pgadmin4-web:
+sudo /usr/pgadmin4/bin/setup-web.sh
+
+Then update your mail id and password
+
+sudo ufw allow http 
+sudo ufw allow https
+
+Then give your public ip as below here with endpoint 
+
+http://18.136.11.69/pgadmin4
+
+Provide your username and password
+
+You can also another website to install pgadmin 
+
+https://computingforgeeks.com/how-to-install-pgadmin-4-on-ubuntu/
+
+

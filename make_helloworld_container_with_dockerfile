@@ -1,0 +1,18 @@
+First create a directory with name helloworld-1 (sudo mkdir helloworld-1)
+Then do cd (cd helloworld-1)
+Then create dockerfile (sudo nano Dockerfile)
+Then paste this below content 
+
+
+# Dockerfile for hello-world-1
+
+FROM nginx:alpine
+RUN echo "Hello, World! 1" > /usr/share/nginx/html/index.html
+
+Then close it with ctrl+x y enter
+Then make the image with command (docker build -t helloworld-1 .)
+Then see the created image with this command (sudo docker images)
+Then make the container with command (docker run -d -p 8088:80 helloworld-1)
+Then access it with (localhost:8088)
+
+Same step follow for the another container.
